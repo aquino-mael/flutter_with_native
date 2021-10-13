@@ -1,1 +1,9 @@
-void main() {}
+import 'package:flutter/material.dart';
+
+import 'ui/widgets/widgets.dart';
+
+void main() {
+  runApp(
+    FlutterWithNative(),
+  );
+}
