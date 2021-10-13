@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           ElevatedButton(
             onPressed: presenter.navigateToBatteryInfoPage,
-            child: Text('Check Battery infos'),
+            child: Text('Check Battery Infos'),
           ),
         ],
       ),

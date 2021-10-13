@@ -50,9 +50,11 @@ class _BatteryInfoScreenState extends State<BatteryInfoScreen> {
           StreamBuilder(
             stream: _presenter.batteryLevel,
             builder: (context, snapshot) {
-              print(snapshot.data);
               return Text(
                 '${snapshot.data ?? 0}',
+                style: TextStyle(
+                  fontSize: 34.0
+                ),
               );
             },
           ),
