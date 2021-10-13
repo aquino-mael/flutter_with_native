@@ -17,6 +17,7 @@ class RouterNavigator {
 
   static Map<String, Widget Function(BuildContext)> routes = {
     HomeScreen.routeName: makeHomeScreen,
+    BatteryInfoScreen.routeName: makeBatteryInfoScreen,
   };
 
   Future<T?> navigateTo<T>(String routeName) async {
