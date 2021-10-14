@@ -1,7 +1,7 @@
 package com.example.flutter_with_native
 
-import android.content.Context
 import androidx.annotation.NonNull
+import com.example.flutter_with_native.plugins.BatteryPlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel

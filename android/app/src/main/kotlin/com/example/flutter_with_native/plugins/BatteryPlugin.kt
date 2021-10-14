@@ -1,8 +1,9 @@
-package com.example.flutter_with_native
+package com.example.flutter_with_native.plugins
 
 import android.content.*
 import android.os.BatteryManager
 import android.os.Build
+import com.example.flutter_with_native.receivers.BatteryBroadcastReceiver
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -59,18 +60,6 @@ class BatteryPlugin(context: Context): MethodChannel.MethodCallHandler, EventCha
     }
 
     private fun makeBatteryLevelReceiver(events: EventChannel.EventSink?) : BroadcastReceiver {
-        return MyBroadCast(events)
+        return BatteryBroadcastReceiver(events)
     }
-}
-
-class MyBroadCast(events: EventChannel.EventSink?): BroadcastReceiver() {
-    val events: EventChannel.EventSink? = events
-
-    override fun onReceive(context: Context?, intent: Intent?) {
-        val batteryLevel: Int = intent!!.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) * 100 / intent.getIntExtra(
-            BatteryManager.EXTRA_SCALE, -1);
-
-        events!!.success(batteryLevel)
-    }
-
 }
