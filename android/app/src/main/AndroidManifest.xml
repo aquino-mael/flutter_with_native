@@ -5,7 +5,7 @@
         android:icon="@mipmap/ic_launcher">
 
     <receiver
-        android:name=".MyReceiver"
+        android:name=".BatteryBroadcastReceiver"
         android:enabled="true"
         android:exported="true" />
 

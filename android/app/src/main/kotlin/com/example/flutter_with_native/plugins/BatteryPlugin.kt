@@ -3,7 +3,7 @@ package com.example.flutter_with_native.plugins
 import android.content.*
 import android.os.BatteryManager
 import android.os.Build
-import com.example.flutter_with_native.receivers.BatteryBroadcastReceiver
+import com.example.flutter_with_native.BatteryBroadcastReceiver
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
