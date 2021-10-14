@@ -16,6 +16,7 @@ class BatteryInfoScreen extends StatelessWidget {
         brightness: Brightness.dark,
       ),
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: _buildAppBar(),
         body: _buildBody(),
       ),
@@ -43,7 +44,7 @@ class BatteryInfoScreen extends StatelessWidget {
                 color: Colors.green,
                 constraints: BoxConstraints(
                   maxHeight: snapshot.hasData
-                    ? (MediaQuery.of(context).size.height / 100) * (snapshot.data?['level'] ?? 0)
+                    ? ((MediaQuery.of(context).size.height - kToolbarHeight) / 100) * (snapshot.data?['level'] ?? 0)
                     : 0,
                 ),
               ),
@@ -58,7 +59,7 @@ class BatteryInfoScreen extends StatelessWidget {
                 stream: presenter.batteryInfos,
                 builder: (context, snapshot) {
                   return Text(
-                    '${snapshot.data?["level"] ?? 0}',
+                    '${snapshot.data?['level'] ?? 0}',
                     style: TextStyle(
                       fontSize: 34.0,
                     ),
