@@ -3,41 +3,28 @@ package com.example.flutter_with_native.plugins
 import android.content.*
 import android.os.BatteryManager
 import android.os.Build
-import com.example.flutter_with_native.BatteryChargingBroadcastReceiver
-import com.example.flutter_with_native.BatteryLevelBroadcastReceiver
+import com.example.flutter_with_native.BatteryBroadcastReceiver
 import io.flutter.plugin.common.EventChannel
 
-class BatteryPlugin(context: Context) : EventChannel.StreamHandler {
+class BatteryPlugin(context: Context): EventChannel.StreamHandler {
     private val applicationContext: Context = context
     private var batteryLevel: Int = 0
     private var batteryCharging: Int = 0
-    private var batteryLevelReceiver: BroadcastReceiver? = null
-    private var batteryChargingReceiver: BroadcastReceiver? = null
+    private var batteryReceiver: BroadcastReceiver? = null
     private val batteryManager = applicationContext.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
-        if(arguments!! == "battery_level") {
-            batteryLevelReceiver = makeBatteryLevelReceiver(events)
-            applicationContext.registerReceiver(batteryLevelReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-            batteryLevel = getBatteryLevel()
+        batteryReceiver = makeBatteryChargingReceiver(events)
+        applicationContext.registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        batteryCharging = getBatteryChargingStatus()
+        batteryLevel = getBatteryLevel()
 
-            sendBatteryLevel(events, batteryLevel)
-        } else if(arguments!! == "battery_charging") {
-            batteryChargingReceiver = makeBatteryChargingReceiver(events)
-            applicationContext.registerReceiver(batteryChargingReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-            batteryCharging = getBatteryChargingStatus()
-
-            sendBatteryChargingStatus(events, batteryCharging)
-        } else {
-            events!!.error("NOT IMPLEMENTED", "Channel not implemented.", arguments)
-        }
+        sendDataToDart(events, batteryCharging, batteryLevel)
     }
 
     override fun onCancel(arguments: Any?) {
-        applicationContext.unregisterReceiver(batteryLevelReceiver)
-        applicationContext.unregisterReceiver(batteryChargingReceiver)
-        batteryLevelReceiver = null
-        batteryChargingReceiver = null
+        applicationContext.unregisterReceiver(batteryReceiver)
+        batteryReceiver = null
     }
 
     private fun getBatteryLevel(): Int {
@@ -56,18 +43,6 @@ class BatteryPlugin(context: Context) : EventChannel.StreamHandler {
         return batteryLevel
     }
 
-    private fun sendBatteryLevel(events: EventChannel.EventSink?, batteryLevel: Int) {
-        if(batteryLevel != -1) {
-            events!!.success(batteryLevel)
-        } else {
-            events!!.error("UNAVAILABLE", "Battery level not available.", null)
-        }
-    }
-
-    private fun makeBatteryLevelReceiver(events: EventChannel.EventSink?) : BroadcastReceiver {
-        return BatteryLevelBroadcastReceiver(events)
-    }
-
     private fun getBatteryChargingStatus(): Int {
         var chargingStatus: Int
 
@@ -80,22 +55,30 @@ class BatteryPlugin(context: Context) : EventChannel.StreamHandler {
         return chargingStatus
     }
 
-    private fun sendBatteryChargingStatus(events: EventChannel.EventSink?, status: Int) {
-        when(status) {
+    private fun sendDataToDart(events: EventChannel.EventSink?, batteryCharging: Int, batteryLevel: Int) {
+        var currentBatteryChargingStatus: String = "";
+        when(batteryCharging) {
             BatteryManager.BATTERY_STATUS_CHARGING ->
-                events!!.success("charging")
+                currentBatteryChargingStatus = "charging"
             BatteryManager.BATTERY_STATUS_FULL ->
-                events!!.success("full")
+                currentBatteryChargingStatus = "full"
             BatteryManager.BATTERY_STATUS_NOT_CHARGING ->
-                events!!.success("isn't charging")
+                currentBatteryChargingStatus = "isn't charging"
             BatteryManager.BATTERY_STATUS_DISCHARGING ->
-                events!!.success("discharging")
+                currentBatteryChargingStatus = "discharging"
             BatteryManager.BATTERY_STATUS_UNKNOWN ->
-                events!!.success("unknown")
+                currentBatteryChargingStatus = "unknown"
         }
+
+        var result: MutableMap<String, Any?> = mutableMapOf<String, Any?>()
+
+        result["charging"] = currentBatteryChargingStatus
+        result["level"] = batteryLevel
+
+        events!!.success(result)
     }
 
     private fun makeBatteryChargingReceiver(events: EventChannel.EventSink?) : BroadcastReceiver {
-        return BatteryChargingBroadcastReceiver(events, ::sendBatteryChargingStatus)
+        return BatteryBroadcastReceiver(events, ::sendDataToDart)
     }
 }

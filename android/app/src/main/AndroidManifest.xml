@@ -6,11 +6,7 @@
       android:icon="@mipmap/ic_launcher"
       android:label="flutter_with_native">
     <receiver
-        android:name=".BatteryChargingBroadcastReceiver"
-        android:enabled="true"
-        android:exported="true" />
-    <receiver
-        android:name=".BatteryLevelBroadcastReceiver"
+        android:name=".BatteryBroadcastReceiver"
         android:enabled="true"
         android:exported="true" />
 

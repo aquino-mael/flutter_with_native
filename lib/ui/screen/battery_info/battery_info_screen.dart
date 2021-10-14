@@ -20,7 +20,7 @@ class _BatteryInfoScreenState extends State<BatteryInfoScreen> {
   void initState() {
     super.initState();
 
-    _presenter.getBatteryLevel();
+    _presenter.getBatteryInfos();
   }
 
   @override
@@ -47,22 +47,22 @@ class _BatteryInfoScreenState extends State<BatteryInfoScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          StreamBuilder(
-            stream: _presenter.batteryInfos['level'],
+          StreamBuilder<dynamic>(
+            stream: _presenter.batteryInfos,
             builder: (context, snapshot) {
               return Text(
-                '${snapshot.data ?? 0}',
+                '${snapshot.data?["level"] ?? 0}',
                 style: TextStyle(
                   fontSize: 34.0
                 ),
               );
             },
           ),
-          StreamBuilder(
-            stream: _presenter.batteryInfos['charging'],
+          StreamBuilder<dynamic>(
+            stream: _presenter.batteryInfos,
             builder: (context, snapshot) {
               return Text(
-                '${snapshot.data}',
+                '${snapshot.data?['charging'] ?? 'UNKNOWN'}',
                 style: TextStyle(
                   fontSize: 24.0
                 ),
