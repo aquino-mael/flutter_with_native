@@ -38,13 +38,15 @@ class BatteryInfoScreen extends StatelessWidget {
         StreamBuilder<dynamic>(
           stream: presenter.batteryInfos,
           builder: (context, snapshot) {
+            double percentBatteryLevel = (MediaQuery.of(context).size.height - kToolbarHeight) * (snapshot.data?['level'] ?? 0) / 100;
+
             return Builder(
               builder: (context) => AnimatedContainer(
                 duration: Duration(seconds: 1),
                 color: Colors.green,
                 constraints: BoxConstraints(
                   maxHeight: snapshot.hasData
-                    ? ((MediaQuery.of(context).size.height - kToolbarHeight) / 100) * (snapshot.data?['level'] ?? 0)
+                    ? percentBatteryLevel
                     : 0,
                 ),
               ),
