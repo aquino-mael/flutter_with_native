@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class BatteryInfoPresenter {
-  late Stream batteryInfos;
+  Stream? batteryInfos;
   final batteryInfosChannel = EventChannel('battery_info');
 
   void getBatteryInfos() {
