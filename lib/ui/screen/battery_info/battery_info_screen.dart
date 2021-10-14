@@ -48,12 +48,23 @@ class _BatteryInfoScreenState extends State<BatteryInfoScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           StreamBuilder(
-            stream: _presenter.batteryLevel,
+            stream: _presenter.batteryInfos['level'],
             builder: (context, snapshot) {
               return Text(
                 '${snapshot.data ?? 0}',
                 style: TextStyle(
                   fontSize: 34.0
+                ),
+              );
+            },
+          ),
+          StreamBuilder(
+            stream: _presenter.batteryInfos['charging'],
+            builder: (context, snapshot) {
+              return Text(
+                '${snapshot.data}',
+                style: TextStyle(
+                  fontSize: 24.0
                 ),
               );
             },

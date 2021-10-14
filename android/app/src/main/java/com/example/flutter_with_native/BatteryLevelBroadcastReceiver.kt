@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.BatteryManager
 import io.flutter.plugin.common.EventChannel.EventSink
 
-class BatteryBroadcastReceiver(): BroadcastReceiver() {
+class BatteryLevelBroadcastReceiver(): BroadcastReceiver() {
     private var events: EventSink? = null
 
     constructor(eventSink: EventSink?) : this() {
