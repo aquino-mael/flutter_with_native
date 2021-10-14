@@ -43,7 +43,7 @@ class BatteryInfoScreen extends StatelessWidget {
                 color: Colors.green,
                 constraints: BoxConstraints(
                   maxHeight: snapshot.hasData
-                    ? (MediaQuery.of(context).size.height / (snapshot.data?['level'] ?? 0)) * 100
+                    ? (MediaQuery.of(context).size.height / 100) * (snapshot.data?['level'] ?? 0)
                     : 0,
                 ),
               ),
