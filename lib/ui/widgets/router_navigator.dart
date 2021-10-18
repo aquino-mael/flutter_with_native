@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../main/factories/factories.dart';
 import '../screen/screen.dart';
 
-/// Singleton to manage all routes in application
 class RouterNavigator {
   const RouterNavigator._();
 
@@ -20,7 +19,7 @@ class RouterNavigator {
     BatteryInfoScreen.routeName: makeBatteryInfoScreen,
   };
 
-  Future<T?> navigateTo<T>(String routeName) async {
+  static Future<T?> navigateTo<T>(String routeName) async {
     return navigatorKey.currentState!.pushNamed<T>(routeName);
   }
 }

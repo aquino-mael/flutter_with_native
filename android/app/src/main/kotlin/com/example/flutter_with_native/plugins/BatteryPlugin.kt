@@ -70,7 +70,7 @@ class BatteryPlugin(context: Context): EventChannel.StreamHandler {
                 currentBatteryChargingStatus = "unknown"
         }
 
-        var result: MutableMap<String, Any?> = mutableMapOf<String, Any?>()
+        val result: MutableMap<String, Any?> = mutableMapOf<String, Any?>()
 
         result["charging"] = currentBatteryChargingStatus
         result["level"] = batteryLevel

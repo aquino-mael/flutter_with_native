@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'battery_info.dart';
+import '../../../presenters/presenters.dart';
 
 class BatteryInfoScreen extends StatelessWidget {
   static const String routeName = '/battery_info';
