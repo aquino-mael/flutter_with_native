@@ -8,18 +8,17 @@ import io.flutter.plugin.common.EventChannel
 
 class BatteryPlugin(context: Context): EventChannel.StreamHandler {
     private val applicationContext: Context = context
-    private var batteryLevel: Int = 0
-    private var batteryCharging: Int = 0
+    private val batteryInfo: BatteryInfo = BatteryInfo();
     private var batteryReceiver: BroadcastReceiver? = null
     private val batteryManager = applicationContext.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
         batteryReceiver = makeBatteryChargingReceiver(events)
         applicationContext.registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-        batteryCharging = getBatteryChargingStatus()
-        batteryLevel = getBatteryLevel()
+        batteryInfo.batteryCharging = getBatteryChargingStatus()
+        batteryInfo.batteryLevel = getBatteryLevel()
 
-        sendDataToDart(events, batteryCharging, batteryLevel)
+        sendDataToDart(events)
     }
 
     override fun onCancel(arguments: Any?) {
@@ -55,7 +54,20 @@ class BatteryPlugin(context: Context): EventChannel.StreamHandler {
         return chargingStatus
     }
 
-    private fun sendDataToDart(events: EventChannel.EventSink?, batteryCharging: Int, batteryLevel: Int) {
+    private fun sendDataToDart(events: EventChannel.EventSink?) {
+        events!!.success(batteryInfo.toMap())
+    }
+
+    private fun makeBatteryChargingReceiver(events: EventChannel.EventSink?) : BroadcastReceiver {
+        return BatteryBroadcastReceiver(events, ::sendDataToDart, batteryInfo)
+    }
+}
+
+class BatteryInfo {
+    var batteryLevel: Int = 0
+    var batteryCharging: Int = 0
+
+    fun toMap() : MutableMap<String, Any?> {
         var currentBatteryChargingStatus: String = "";
         when(batteryCharging) {
             BatteryManager.BATTERY_STATUS_CHARGING ->
@@ -70,15 +82,11 @@ class BatteryPlugin(context: Context): EventChannel.StreamHandler {
                 currentBatteryChargingStatus = "unknown"
         }
 
-        val result: MutableMap<String, Any?> = mutableMapOf<String, Any?>()
+        var result = mutableMapOf<String, Any?>();
 
         result["charging"] = currentBatteryChargingStatus
         result["level"] = batteryLevel
 
-        events!!.success(result)
-    }
-
-    private fun makeBatteryChargingReceiver(events: EventChannel.EventSink?) : BroadcastReceiver {
-        return BatteryBroadcastReceiver(events, ::sendDataToDart)
+        return result
     }
 }
