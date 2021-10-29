@@ -32,57 +32,50 @@ class BatteryInfoScreen extends StatelessWidget {
   Widget _buildBody() {
     presenter.getBatteryInfos();
 
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        StreamBuilder<dynamic>(
-          stream: presenter.batteryInfos,
-          builder: (context, snapshot) {
-            double percentBatteryLevel = (MediaQuery.of(context).size.height - kToolbarHeight) * (snapshot.data?['level'] ?? 0) / 100;
-
-            return Builder(
-              builder: (context) => AnimatedContainer(
-                duration: Duration(seconds: 1),
-                color: Colors.green,
-                constraints: BoxConstraints(
-                  maxHeight: snapshot.hasData
-                    ? percentBatteryLevel
-                    : 0,
-                ),
+    return StreamBuilder<dynamic>(
+      stream: presenter.batteryInfos,
+      builder: (context, snapshot) {
+        print(snapshot.data);
+        int currentBatteryLevel = snapshot.data?['level'] ?? 0;
+        double batteryLevelOnScreen = (MediaQuery.of(context).size.height - kToolbarHeight) * currentBatteryLevel / 100;
+        return Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            AnimatedContainer(
+              duration: Duration(seconds: 1),
+              color: currentBatteryLevel > 75
+                ? Colors.green
+                : currentBatteryLevel > 20
+                  ? Colors.orange
+                  : Colors.red,
+              constraints: BoxConstraints(
+                maxHeight: snapshot.hasData
+                  ? batteryLevelOnScreen
+                  : 0,
               ),
-            );
-          },
-        ),
-        Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              StreamBuilder<dynamic>(
-                stream: presenter.batteryInfos,
-                builder: (context, snapshot) {
-                  return Text(
+            ),
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
                     '${snapshot.data?['level'] ?? 0}',
                     style: TextStyle(
                       fontSize: 34.0,
                     ),
-                  );
-                },
-              ),
-              StreamBuilder<dynamic>(
-                stream: presenter.batteryInfos,
-                builder: (context, snapshot) {
-                  return Text(
+                  ),
+                  Text(
                     '${snapshot.data?['charging'] ?? 'UNKNOWN'}',
                     style: TextStyle(
                       fontSize: 24.0,
                     ),
-                  );
-                },
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      }
     );
   }
 }
